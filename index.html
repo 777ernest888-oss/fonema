@@ -1,0 +1,364 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f4f7f5">
+<title>ФОНЕМА · voice trainer</title>
+<style>
+:root{--paper:#f4f7f5;--ink:#12333a;--muted:#5f7a76;--cardline:rgba(18,51,58,.15);--card:rgba(18,51,58,.05);--amber:#e8930c;--mint:#0aa58c;--coral:#e85d3d;--kid:#e0447c;--mist:#eaf4f1;--head:"Segoe UI",system-ui,Arial,sans-serif;--body:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;--mono:ui-monospace,Consolas,"Courier New",monospace}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:var(--body);background:var(--paper);color:var(--ink);font-size:16px}
+.wrap{max-width:1000px;margin:0 auto;padding:22px 18px 40px}
+.topbar{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;flex-wrap:wrap}
+.brand{font-family:var(--head);font-weight:800;font-size:30px;cursor:pointer}
+.brand em{font-style:normal;color:var(--amber)}
+.brand small{display:block;font-family:var(--mono);font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--mint);margin-top:4px}
+.pills{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.pill{font-family:var(--mono);font-size:12px;border:1px solid var(--cardline);border-radius:99px;padding:7px 12px;color:var(--muted);background:var(--card)}
+.swAv{width:42px;height:42px;border-radius:50%;border:2px solid var(--cardline);background:#fff;cursor:pointer;display:grid;place-items:center}
+.swAv svg{width:32px;height:32px}
+.swAdd{width:42px;height:42px;border-radius:50%;border:2px dashed var(--cardline);background:none;color:var(--muted);cursor:pointer;font-size:19px}
+h1{font-family:var(--head);font-weight:800;font-size:clamp(36px,8vw,64px);line-height:1;margin:20px 0 10px}
+h1 .u{color:var(--amber)}
+.sub{color:var(--muted);font-size:17px;max-width:620px;line-height:1.6}
+.block{margin-top:26px}
+.bh{display:flex;gap:10px;align-items:baseline;margin-bottom:10px}
+.bh .n{font-family:var(--mono);color:var(--coral)}
+.bh h2{font-family:var(--head);font-weight:800;font-size:22px}
+.profiles{display:flex;gap:12px;flex-wrap:wrap}
+.pcard{width:140px;border:1px solid var(--cardline);border-radius:18px;background:#fff;padding:16px 10px 12px;cursor:pointer;text-align:center}
+.pcard .pav{width:72px;height:72px;margin:0 auto 8px;border-radius:50%;background:var(--mist);display:grid;place-items:center}
+.pcard .pav svg{width:56px;height:56px}
+.pcard .pn{font-family:var(--head);font-weight:700;font-size:18px}
+.pcard .pm{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:3px}
+.pcard.add{display:grid;place-items:center;border-style:dashed;background:none;color:var(--muted);font-family:var(--head)}
+.flags{display:flex;gap:10px;flex-wrap:wrap}
+.flag{display:flex;align-items:center;gap:8px;padding:12px 15px;border:1px solid var(--cardline);border-radius:14px;background:#fff;cursor:pointer;font-size:16px;font-weight:600}
+.flag .em{font-size:22px}
+.flag.on{border-color:var(--amber);background:rgba(232,147,12,.1)}
+.flag.disabled{opacity:.3;cursor:not-allowed}
+.seg{display:inline-flex;gap:2px;background:#fff;border:1px solid var(--cardline);border-radius:14px;padding:4px}
+.seg button{border:none;background:none;color:var(--muted);font-weight:700;font-size:14px;padding:10px 16px;border-radius:10px;cursor:pointer}
+.seg button.on{background:var(--mint);color:#fff}
+.themes{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media(min-width:640px){.themes{grid-template-columns:repeat(4,1fr)}}
+.theme{border:1px solid var(--cardline);border-radius:16px;background:#fff;padding:14px;cursor:pointer}
+.theme .ic{font-size:26px}
+.theme .nm{font-weight:700;font-size:15px;margin-top:6px}
+.theme .ct{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:3px}
+.theme.on{border-color:var(--mint);background:rgba(10,165,140,.08)}
+.theme.kid{border-color:rgba(224,68,124,.35)}
+.start{margin-top:24px;font-family:var(--head);font-weight:800;font-size:19px;border:none;border-radius:99px;padding:15px 40px;background:var(--amber);color:#fff;cursor:pointer;box-shadow:0 12px 28px rgba(232,147,12,.3)}
+.screen[hidden]{display:none}
+.ctx{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.ctx .tag{font-family:var(--mono);font-size:12px;border:1px solid var(--cardline);border-radius:99px;padding:7px 12px;background:#fff}
+.ctx .chg{margin-left:auto;border:none;background:none;color:var(--mint);font-weight:700;cursor:pointer}
+.modetabs{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.modetabs button{font-family:var(--mono);font-size:12px;border:1px solid var(--cardline);background:#fff;color:var(--muted);border-radius:99px;padding:7px 12px;cursor:pointer}
+.modetabs button.on{border-color:var(--mint);color:var(--mint)}
+.deck{margin-top:12px;background:#fff;border:1px solid var(--cardline);border-radius:20px;padding:24px 20px;box-shadow:0 12px 34px rgba(18,51,58,.1)}
+.deck.listening{box-shadow:0 0 0 2px rgba(10,165,140,.4) inset}
+.stage{display:grid;grid-template-columns:110px 1fr;gap:14px;align-items:center;margin-top:12px}
+@media(max-width:560px){.stage{grid-template-columns:1fr;justify-items:center;text-align:center}}
+.petBox{width:110px;height:110px;border-radius:50%;background:var(--mist);display:grid;place-items:center}
+.petBox svg{width:90px;height:90px}
+.target{font-family:var(--head);font-weight:800;font-size:clamp(24px,6vw,42px);line-height:1.15}
+.ipa{font-family:var(--mono);color:var(--mint);font-size:14px;margin-top:6px}
+.tr{color:var(--muted);font-size:16px;margin-top:6px}
+.controls{display:flex;align-items:center;justify-content:center;gap:20px;margin:18px 0 4px;flex-wrap:wrap}
+.btn{font-family:var(--body);font-weight:700;border-radius:99px;padding:12px 20px;font-size:15px;cursor:pointer}
+.btn.ghost{background:#fff;color:var(--ink);border:1px solid var(--cardline)}
+.mic{position:relative;width:92px;height:92px;border-radius:50%;border:none;cursor:pointer;background:radial-gradient(circle at 32% 30%,#ffd9a0,var(--amber) 55%,#c97a06);box-shadow:0 12px 30px rgba(232,147,12,.4)}
+.mic .core{position:relative;z-index:2;font-size:33px}
+.mic .ring{position:absolute;inset:0;border-radius:50%;border:2px solid rgba(232,147,12,.6);opacity:0}
+.mic.rec{background:radial-gradient(circle at 32% 30%,#7af0dd,var(--mint) 55%,#07806d)}
+.mic.rec .ring{animation:pulse 1.4s infinite}
+.mic.rec .r2{animation-delay:.7s}
+@keyframes pulse{to{transform:scale(1.9);opacity:0}}
+.wave{display:flex;align-items:center;justify-content:center;gap:3px;height:38px;margin:10px 0 2px}
+.wave span{width:4px;height:10%;border-radius:3px;background:linear-gradient(180deg,var(--mint),var(--amber));opacity:.3}
+.wave.on span{opacity:1;animation:eq .5s infinite alternate;animation-delay:calc(var(--i)*.04s)}
+@keyframes eq{from{height:12%}to{height:var(--h)}}
+.status{text-align:center;font-size:12px;color:var(--muted);min-height:18px;font-family:var(--mono)}
+.result{margin-top:18px;padding-top:18px;border-top:1px dashed var(--cardline)}
+.verdict{font-size:19px;font-weight:800;margin-bottom:8px}
+.diff{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0}
+.w{font-family:var(--mono);font-size:14px;padding:5px 11px;border-radius:9px}
+.w.ok{color:var(--mint);background:rgba(10,165,140,.1);border:1px solid rgba(10,165,140,.35)}
+.w.miss{color:var(--coral);background:rgba(232,93,61,.08);border:1px solid rgba(232,93,61,.4);text-decoration:line-through}
+.w.extra{color:var(--amber);background:rgba(232,147,12,.08);border:1px dashed rgba(232,147,12,.5)}
+.ai{border:1px solid var(--cardline);border-radius:14px;background:var(--mist);padding:14px;text-align:left}
+.ai .fixed{font-family:var(--head);font-weight:700;font-size:19px}
+.ai .tip{color:var(--muted);font-size:14px;border-left:3px solid var(--amber);padding-left:10px;margin-top:8px}
+.err{border-left:3px solid var(--coral);padding-left:10px;margin:8px 0;font-size:14px}
+.err .wr{color:var(--coral);text-decoration:line-through}
+.err .ri{color:var(--mint);font-weight:700}
+.chat{display:flex;flex-direction:column;gap:10px;margin-top:12px;max-height:44vh;overflow-y:auto}
+.bub{max-width:82%;padding:12px 15px;border-radius:16px;font-size:15px}
+.bub.client{align-self:flex-start;background:#fff;border:1px solid var(--cardline)}
+.bub.client .who{font-family:var(--mono);font-size:10px;color:var(--mint);margin-bottom:4px}
+.bub.client .play{border:none;background:none;cursor:pointer}
+.bub.me{align-self:flex-end;background:rgba(10,165,140,.12);border:1px solid rgba(10,165,140,.3)}
+.bub.fb{align-self:flex-end;border:1px dashed rgba(232,147,12,.5);color:var(--muted);font-size:13px}
+.pet .eye-happy,.pet .eye-ouch,.pet .mouth-happy,.pet .mouth-ouch{display:none}
+.pet.success .eye-open{display:none}.pet.success .eye-happy{display:block}
+.pet.success .mouth-open{display:none}.pet.success .mouth-happy{display:block}
+.pet.success{animation:hop .6s}
+@keyframes hop{40%{transform:translateY(-12px)}}
+.pet.ouch .eye-open{display:none}.pet.ouch .eye-ouch{display:block}
+.pet.ouch .mouth-open{display:none}.pet.ouch .mouth-ouch{display:block}
+#dbg{color:var(--coral);font-family:var(--mono);font-size:12px;padding:10px 18px;max-width:1000px;margin:0 auto}
+footer{color:var(--muted);font-family:var(--mono);font-size:11px;padding:10px 18px 40px;max-width:1000px;margin:0 auto}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <div class="brand" id="brandHome">ФО<em>НЕ</em>МА<small>voice trainer · multilingual</small></div>
+    <div class="pills"><span class="pill" id="streakPill">🔁 0</span><span class="pill" id="avgPill">Ø —</span><span id="swProfiles" style="display:flex;gap:8px"></span></div>
+  </div>
+
+  <section class="screen" id="onboard">
+    <h1 id="mTitle"></h1><p class="sub" id="mSub"></p>
+    <div class="block"><div class="bh"><span class="n">00</span><h2 id="lWho"></h2></div><div class="profiles" id="profiles"></div></div>
+    <div class="block"><div class="bh"><span class="n">01</span><h2 id="lNative"></h2></div><div class="flags" id="flagsNative"></div></div>
+    <div class="block"><div class="bh"><span class="n">02</span><h2 id="lTarget"></h2></div><div class="flags" id="flagsTarget"></div></div>
+    <div class="block"><div class="bh"><span class="n">03</span><h2 id="lMode"></h2></div><div class="seg" id="modeSeg"></div></div>
+    <div class="block"><div class="bh"><span class="n">04</span><h2 id="lTheme"></h2></div><div class="themes" id="themes"></div></div>
+    <button class="start" id="startBtn">→</button>
+  </section>
+
+  <section class="screen" id="trainer" hidden>
+    <div class="ctx"><span class="tag" id="ctxWho"></span><span class="tag" id="ctxDir"></span><span class="tag" id="ctxTheme"></span><button class="chg" id="changeBtn">✎</button></div>
+    <div class="modetabs" id="modeTabs"></div>
+    <div class="deck" id="deck">
+      <div class="stage"><div class="petBox"><span class="pet idle" id="pet"></span></div>
+        <div><div class="target" id="target">…</div><div class="ipa" id="ipa"></div><div class="tr" id="tr"></div></div></div>
+      <div class="controls"><button class="btn ghost" id="listenBtn">🔊</button><button class="mic" id="micBtn"><span class="ring r1"></span><span class="ring r2"></span><span class="core">🎙</span></button><button class="btn ghost" id="nextBtn">→</button></div>
+      <div class="wave" id="wave"></div><div class="status" id="status"></div>
+      <div class="chat" id="chat" hidden></div>
+      <div class="result" id="result" hidden>
+        <div class="verdict" id="verdict"></div><div class="diff" id="diff"></div><div id="aiSlot"></div><button class="btn ghost" id="retryBtn">↻</button>
+      </div>
+    </div>
+  </section>
+</div>
+<div id="dbg"></div>
+<footer id="foot"></footer>
+
+<script>
+window.onerror=function(m,s,l){var d=document.getElementById("dbg");if(d)d.textContent="error: "+m+" (line "+l+")";};
+</script>
+
+<script>
+var STOP=["насил","наркот","убий","убить","секс","самоуб","суицид","взрыв","бомб","оружи","украсть","взлом","drug","violence","kill","murder","sex","suicide","weapon","bomb","steal","droga","sexo","suicidio","arma","bomba","暴力","毒品","杀人","自杀","武器"];
+function safetyCheck(s){var low=(s||"").toLowerCase();for(var i=0;i<STOP.length;i++){if(low.indexOf(STOP[i])>-1)return true;}return false;}
+var PII=["мой адрес","my address","mi dirección","телефон","phone","número","номер","школа","school","escuela","где я живу","i live at"];
+function piiCheck(s){var low=(s||"").toLowerCase();if(/\d[\d\s\-()]{6,}\d/.test(low))return true;for(var i=0;i<PII.length;i++){if(low.indexOf(PII[i])>-1)return true;}return false;}
+
+function petSVG(id){
+var C={fox:["#ff8a5b","#ffe0c2","#d8543a"],owl:["#9b7ede","#e7defb","#6f53b8"],cat:["#5ec8d8","#d6f4f8","#2f9aab"],dragon:["#5fd08a","#d8f7e3","#2f9c5e"],sloth:["#c79a6b","#f0dcc0","#9c7444"],bot:["#ffd166","#fff1c9","#d9a93a"]}[id]||["#ff8a5b","#ffe0c2","#d8543a"];
+return '<svg viewBox="0 0 100 100"><path d="M30 40 L24 14 L46 30 Z" fill="'+C[2]+'"/><path d="M70 40 L76 14 L54 30 Z" fill="'+C[2]+'"/><circle cx="50" cy="54" r="30" fill="'+C[0]+'"/><ellipse cx="50" cy="64" rx="18" ry="14" fill="'+C[1]+'"/><g class="eye-open"><circle cx="40" cy="50" r="6" fill="#fff"/><circle cx="40" cy="51" r="3" fill="#12333a"/><circle cx="60" cy="50" r="6" fill="#fff"/><circle cx="60" cy="51" r="3" fill="#12333a"/></g><path class="eye-happy" d="M34 50 q6 -6 12 0" stroke="#12333a" stroke-width="3" fill="none"/><path class="eye-happy" d="M54 50 q6 -6 12 0" stroke="#12333a" stroke-width="3" fill="none"/><path class="eye-ouch" d="M35 47 l10 8 M45 47 l-10 8" stroke="#12333a" stroke-width="3"/><path class="eye-ouch" d="M55 47 l10 8 M65 47 l-10 8" stroke="#12333a" stroke-width="3"/><path class="mouth-open" d="M44 64 q6 5 12 0" stroke="#12333a" stroke-width="2.5" fill="none"/><path class="mouth-happy" d="M42 63 q8 9 16 0" stroke="#12333a" stroke-width="3" fill="none"/><circle class="mouth-ouch" cx="50" cy="66" r="4" fill="#12333a"/></svg>';
+}
+var AVATARS=["fox","owl","cat","dragon","sloth","bot"];
+var LANGS={en:["🇬","en-US","en-US","English"],es:["🇪🇸","es-ES","es-ES","Español"],esMX:["🇲🇽","es-MX","es-MX","Español MX"],fr:["🇫🇷","fr-FR","fr-FR","Français"],zh:["🇨🇳","zh-CN","zh-CN","中文"],ru:["🇷🇺","ru-RU","ru-RU","Русский"],vi:["🇻🇳","vi-VN","vi-VN","Tiếng Việt"]};
+
+var UI={
+ru:{mTitle:'Говори. <span class="u">Слушай.</span> Повторяй.',mSub:"Создай напарника, выбери языки, режим и сцену. Нажми микрофон и говори — разбор работает даже без интернета.",lWho:"Кто учится?",lNative:"Я говорю на",lTarget:"Учу язык",lMode:"Режим",lTheme:"Сцена",sceneWord:"сцена",start:"Начать",listen:"Эталон",next:"Дальше",retry:"Ещё раз",idle:"нажми микрофон и произнеси фразу",freeIdle:"свободный режим — говори что угодно",dialogIdle:"диалог — отвечай голосом",listen2:"🎙 слушаю… говори",heard:"🎙 слышу: ",nospeech:"не расслышал — попробуй ещё раз 🙉",denied:"⛔ разреши микрофон в настройках браузера",vGreat:"🏆 Отлично!",vGood:"💪 Хорошо!",vMid:"🎯 Неплохо, потренируем",vLow:"🌱 Пока сложно — медленнее",vKidGreat:"🎉 Супер! Питомец радуется!",vKidGood:"⭐ Классно, так держать!",vKidMid:"💪 Почти! Ещё разок?",vKidLow:"🤗 Ты молодец, что попробовал!",tipPerfect:"Распознаватель понял каждое слово. Бери следующую!",tipMiss:"Не расслышал: ",tipMiss2:". Произнеси чётче и медленнее.",tipExtra:"Лишние слова — возможно, говорил быстро.",thinking:"разбираю твою речь",clientThinks:"собеседник отвечает",modes:{repeat:"Повтор",free:"Свободный",dialog:"Диалог"},safetyKid:"Давай лучше останемся в нашей игре 🙂",safetyAdult:"Эту тему я не обсуждаю — вернёмся к сцене.",pii:"Это лучше не говорить вслух 🙂",addNew:"+ Новый",foot:"v1.1 · fonema_v11 · самодостаточный · без внешних шрифтов"},
+en:{mTitle:'Speak. <span class="u">Listen.</span> Repeat.',mSub:"Create a buddy, pick languages, mode and scene. Tap the mic — analysis works even offline.",lWho:"Who is learning?",lNative:"I speak",lTarget:"I am learning",lMode:"Mode",lTheme:"Scene",sceneWord:"scene",start:"Start",listen:"Model",next:"Next",retry:"Again",idle:"tap the mic and say the phrase",freeIdle:"free mode — say anything",dialogIdle:"dialog — answer by voice",listen2:"🎙 listening… speak",heard:"🎙 heard: ",nospeech:"did not catch it — try again 🙉",denied:"⛔ allow the microphone in browser settings",vGreat:"🏆 Excellent!",vGood:"💪 Good!",vMid:"🎯 Not bad, practice",vLow:"🌱 Hard — slower",vKidGreat:"🎉 Awesome!",vKidGood:"⭐ Great!",vKidMid:"💪 Almost!",vKidLow:"🤗 Good try!",tipPerfect:"Caught every word. Next!",tipMiss:"Not heard: ",tipMiss2:". Say clearly.",tipExtra:"Extra words.",thinking:"analysing",clientThinks:"partner is replying",modes:{repeat:"Repeat",free:"Free",dialog:"Dialog"},safetyKid:"Let us stay in our game 🙂",safetyAdult:"I do not discuss that — back to the scene.",pii:"Better not say that out loud 🙂",addNew:"+ New",foot:"v1.1 · fonema_v11 · self-contained"},
+es:{mTitle:'Habla. <span class="u">Escucha.</span> Repite.',mSub:"Crea un compañero, elige idiomas, modo y escena. Toca el micro — funciona sin internet.",lWho:"¿Quién aprende?",lNative:"Hablo",lTarget:"Aprendo",lMode:"Modo",lTheme:"Escena",sceneWord:"escena",start:"Empezar",listen:"Modelo",next:"Siguiente",retry:"Otra vez",idle:"toca el micro y di la frase",freeIdle:"modo libre",dialogIdle:"diálogo — responde con la voz",listen2:"🎙 escuchando… habla",heard:"🎙 oigo: ",nospeech:"no lo capté — otra vez 🙉",denied:"⛔ permite el micrófono",vGreat:"🏆 ¡Excelente!",vGood:"💪 ¡Bien!",vMid:"🎯 Practiquemos",vLow:"🌱 Más despacio",vKidGreat:"🎉 ¡Genial!",vKidGood:"⭐ ¡Muy bien!",vKidMid:"💪 ¡Casi!",vKidLow:"🤗 ¡Buen intento!",tipPerfect:"¡Cada palabra! Siguiente.",tipMiss:"No oído: ",tipMiss2:". Más claro.",tipExtra:"Palabras de más.",thinking:"analizando",clientThinks:"el compañero responde",modes:{repeat:"Repetir",free:"Libre",dialog:"Diálogo"},safetyKid:"Sigamos en nuestro juego 🙂",safetyAdult:"Ese tema no — volvamos a la escena.",pii:"Mejor no digas eso en voz alta 🙂",addNew:"+ Nuevo",foot:"v1.1 · fonema_v11"},
+esMX:{mTitle:'Habla. <span class="u">Escucha.</span> Repite.',mSub:"Crea un compi, elige idiomas, modo y escena. Toca el micro — jala sin internet.",lWho:"¿Quién aprende?",lNative:"Hablo",lTarget:"Aprendo",lMode:"Modo",lTheme:"Escena",sceneWord:"escena",start:"Empezar",listen:"Modelo",next:"Siguiente",retry:"Otra vez",idle:"toca el micro y di la frase",freeIdle:"modo libre",dialogIdle:"diálogo — contéstale con la voz",listen2:"🎙 escuchando… habla",heard:"🎙 oigo: ",nospeech:"no caché — otra vez 🙉",denied:"⛔ permite el micro",vGreat:"🏆 ¡Órale!",vGood:"💪 ¡Bien!",vMid:"🎯 Practiquemos",vLow:"🌊 Más despacio",vKidGreat:"🎉 ¡Órale!",vKidGood:"⭐ ¡Sigue así!",vKidMid:"💪 ¡Casi!",vKidLow:"🤗 ¡Eres un crack!",tipPerfect:"¡Todo! Siguiente.",tipMiss:"No oí: ",tipMiss2:". Más claro.",tipExtra:"Palabras de más.",thinking:"analizando",clientThinks:"el compi responde",modes:{repeat:"Repetir",free:"Libre",dialog:"Diálogo"},safetyKid:"Sigamos en nuestro juego 🙂",safetyAdult:"Ese tema no — volvamos a la escena.",pii:"Mejor no digas eso en voz alta 🙂",addNew:"+ Nuevo",foot:"v1.1 · fonema_v11"},
+vi:{mTitle:'Nói. <span class="u">Nghe.</span> Lặp lại.',mSub:"Tạo một người bạn, chọn ngôn ngữ, chế độ và ngữ cảnh. Chạm mic — hoạt động cả khi ngoại tuyến.",lWho:"Ai đang học?",lNative:"Tôi nói",lTarget:"Tôi đang học",lMode:"Chế độ",lTheme:"Ngữ cảnh",sceneWord:"ngữ cảnh",start:"Bắt đầu",listen:"Mẫu",next:"Tiếp",retry:"Lại",idle:"chạm mic và đọc câu",freeIdle:"chế độ tự do",dialogIdle:"hội thoại — trả lời bằng giọng",listen2:"🎙 đang nghe… nói đi",heard:"🎙 nghe: ",nospeech:"không nghe rõ — thử lại 🙉",denied:"⛔ cho phép mic",vGreat:"🏆 Xuất sắc!",vGood:"💪 Tốt lắm!",vMid:"🎯 Khá ổn",vLow:"🌱 Chậm lại",vKidGreat:"🎉 Tuyệt!",vKidGood:"⭐ Giỏi lắm!",vKidMid:"💪 Gần đúng!",vKidLow:"🤗 Con giỏi lắm!",tipPerfect:"Nghe rõ từng từ! Câu tiếp.",tipMiss:"Không nghe: ",tipMiss2:". Rõ và chậm hơn.",tipExtra:"Từ thừa.",thinking:"đang phân tích",clientThinks:"đối phương trả lời",modes:{repeat:"Lặp",free:"Tự do",dialog:"Hội thoại"},safetyKid:"Mình tiếp tục trò chơi nhé 🙂",safetyAdult:"Mình không bàn chuyện đó — quay lại ngữ cảnh.",pii:"Điều này đừng nói to nhé 🙂",addNew:"+ Mới",foot:"v1.1 · fonema_v11"}
+};
+
+var TOPICS=[
+{id:"restaurant",ic:"🍽️",aud:"all",char:{ru:"официант",en:"waiter",es:"camarero",esMX:"mesero",vi:"bồi bàn"},name:{ru:"Ресторан",en:"Restaurant",es:"Restaurante",esMX:"Restaurante",vi:"Nhà hàng"},role:{ru:"официант. если гостю жарко — предложи лимонад; если готов заказать — меню; если просит счёт — неси счёт. одна короткая фраза.",en:"a waiter. If the guest is hot, offer lemonade; if ready to order, go to menu; if asking for the bill, bring it. One short sentence.",es:"un camarero. Si hace calor ofrece limonada; si quiere pedir pasa al menú; si pide la cuenta tráela.",esMX:"un mesero. Si hace calor ofrece limonada; si quiere pedir pasa al menú; si pide la cuenta tráela.",vi:"bồi bàn. Trời nóng mời nước chanh; sẵn sàng gọi thì sang thực đơn; đòi tính tiền mang hóa đơn."},cards:[
+{en:["Could we see the menu, please?"],es:["¿Nos trae la carta, por favor?"],esMX:["¿Nos trae el menú, porfa?"],fr:["On peut voir le menu, s'il vous plaît ?"],zh:["可以看一下菜单吗？"],vi:["Cho chúng tôi xem thực đơn nhé?"],ru:["Можно нам меню, пожалуйста?"],tr:{ru:"Можно нам меню, пожалуйста?",en:"Could we see the menu, please?",es:"¿Nos trae la carta, por favor?",esMX:"¿Nos trae el menú, porfa?",vi:"Cho chúng tôi xem thực đơn nhé?"}},
+{en:["It is a hot day today!"],es:["¡Hace mucho calor hoy!"],esMX:["¡Está haciendo mucho calor!"],fr:["Il fait très chaud aujourd'hui !"],zh:["今天真热！"],vi:["Hôm nay trời nóng quá!"],ru:["Сегодня такой жаркий день!"],tr:{ru:"Сегодня такой жаркий день!",en:"It is a hot day today!",es:"¡Hace mucho calor hoy!",esMX:"¡Está haciendo mucho calor!",vi:"Hôm nay trời nóng quá!"}},
+{en:["We are ready to order."],es:["Estamos listos para pedir."],esMX:["Ya estamos listos para ordenar."],fr:["Nous sommes prêts à commander."],zh:["我们准备点餐了。"],vi:["Chúng tôi sẵn sàng gọi món."],ru:["Мы готовы сделать заказ."],tr:{ru:"Мы готовы сделать заказ.",en:"We are ready to order.",es:"Estamos listos para pedir.",esMX:"Ya estamos listos para ordenar.",vi:"Chúng tôi sẵn sàng gọi món."}},
+{en:["Could we have the bill, please?"],es:["¿Nos trae la cuenta, por favor?"],esMX:["¿Nos regala la cuenta, porfa?"],fr:["L'addition, s'il vous plaît ?"],zh:["请给我们账单。"],vi:["Cho chúng tôi xin hóa đơn nhé?"],ru:["Можно нам счёт, пожалуйста?"],tr:{ru:"Можно нам счёт, пожалуйста?",en:"Could we have the bill, please?",es:"¿Nos trae la cuenta, por favor?",esMX:"¿Nos regala la cuenta, porfa?",vi:"Cho chúng tôi xin hóa đơn nhé?"}}
+]},
+{id:"tourism",ic:"✈️",aud:"all",char:{ru:"администратор отеля",en:"receptionist",es:"recepcionista",esMX:"recepcionista",vi:"lễ tân"},name:{ru:"Туризм",en:"Tourism",es:"Turismo",esMX:"Turismo",vi:"Du lịch"},role:{ru:"администратор отеля: заселение, дорога, экскурсии",en:"a hotel receptionist: check-in, directions, tours",es:"un recepcionista: check-in, direcciones, excursiones",esMX:"un recepcionista: check-in, direcciones, excursiones",vi:"lễ tân: nhận phòng, chỉ đường, tour"},cards:[
+{en:["Where is the nearest metro station?"],es:["¿Dónde está la estación de metro más cercana?"],esMX:["¿Dónde queda la estación del metro?"],fr:["Où est la station de métro la plus proche ?"],zh:["最近的地铁站在哪里？"],vi:["Ga tàu điện gần nhất ở đâu?"],ru:["Где ближайшая станция метро?"],tr:{ru:"Где ближайшая станция метро?",en:"Where is the nearest metro station?",es:"¿Dónde está la estación de metro más cercana?",esMX:"¿Dónde queda la estación del metro?",vi:"Ga tàu điện gần nhất ở đâu?"}},
+{en:["I would like a room for two nights."],es:["Quisiera una habitación para dos noches."],esMX:["Quisiera una recámara para dos noches."],fr:["Je voudrais une chambre pour deux nuits."],zh:["我想要一间住两晚的房。"],vi:["Tôi muốn một phòng hai đêm."],ru:["Мне нужен номер на две ночи."],tr:{ru:"Мне нужен номер на две ночи.",en:"I would like a room for two nights.",es:"Quisiera una habitación para dos noches.",esMX:"Quisiera una recámara para dos noches.",vi:"Tôi muốn một phòng hai đêm."}}
+]},
+{id:"shopping",ic:"🛍️",aud:"all",char:{ru:"продавец",en:"shop assistant",es:"dependiente",esMX:"dependiente",vi:"nhân viên"},name:{ru:"Покупки",en:"Shopping",es:"Compras",esMX:"Compras",vi:"Mua sắm"},role:{ru:"продавец: цена, размер, примерка, оплата",en:"a shop assistant: price, size, fitting, payment",es:"un dependiente: precio, talla, prueba, pago",esMX:"un dependiente: precio, talla, prueba, pago",vi:"nhân viên: giá, cỡ, thử, thanh toán"},cards:[
+{en:["How much does this cost?"],es:["¿Cuánto cuesta esto?"],esMX:["¿Cuánto cuesta esto?"],fr:["Combien ça coûte ?"],zh:["这个多少钱？"],vi:["Cái này bao nhiêu?"],ru:["Сколько это стоит?"],tr:{ru:"Сколько это стоит?",en:"How much does this cost?",es:"¿Cuánto cuesta esto?",esMX:"¿Cuánto cuesta esto?",vi:"Cái này bao nhiêu?"}},
+{en:["Can I try this on?"],es:["¿Puedo probármelo?"],esMX:["¿Me lo puedo probar?"],fr:["Je peux l'essayer ?"],zh:["我可以试穿吗？"],vi:["Tôi thử được không?"],ru:["Можно примерить?"],tr:{ru:"Можно примерить?",en:"Can I try this on?",es:"¿Puedo probármelo?",esMX:"¿Me lo puedo probar?",vi:"Tôi thử được không?"}}
+]},
+{id:"work",ic:"💼",aud:"adult",char:{ru:"деловой партнёр",en:"business partner",es:"socio",esMX:"socio",vi:"đối tác"},name:{ru:"Работа",en:"Work",es:"Trabajo",esMX:"Trabajo",vi:"Công việc"},role:{ru:"деловой собеседник: встреча, почта, благодарности",en:"a business counterpart: meeting, email, thanks",es:"un interlocutor de trabajo",esMX:"un contacto de trabajo",vi:"đối tác công việc"},cards:[
+{en:["I work in real estate."],es:["Trabajo en el sector inmobiliario."],esMX:["Trabajo en bienes raíces."],fr:["Je travaille dans l'immobilier."],zh:["我从事房地产行业。"],vi:["Tôi làm trong ngành bất động sản."],ru:["Я работаю в недвижимости."],tr:{ru:"Я работаю в недвижимости.",en:"I work in real estate.",es:"Trabajo en el sector inmobiliario.",esMX:"Trabajo en bienes raíces.",vi:"Tôi làm trong ngành bất động sản."}},
+{en:["Let's set up a meeting."],es:["Organicemos una reunión."],esMX:["Agendemos una junta."],fr:["Organisons une réunion."],zh:["我们安排个会议吧。"],vi:["Mình hẹn một cuộc họp nhé."],ru:["Давайте назначим встречу."],tr:{ru:"Давайте назначим встречу.",en:"Let's set up a meeting.",es:"Organicemos una reunión.",esMX:"Agendemos una junta.",vi:"Mình hẹn một cuộc họp nhé."}}
+]},
+{id:"study",ic:"🎓",aud:"all",char:{ru:"одноклассник",en:"classmate",es:"compañero",esMX:"compañero",vi:"bạn học"},name:{ru:"Учёба",en:"Study",es:"Estudio",esMX:"Estudio",vi:"Học tập"},role:{ru:"одноклассник: повторить, объяснить слово",en:"a classmate: repeat, explain a word",es:"un compañero: repetir, explicar",esMX:"un compañero: repetir, explicar",vi:"bạn học: lặp lại, giải thích"},cards:[
+{en:["Could you repeat more slowly?"],es:["¿Puede repetir más despacio?"],esMX:["¿Puedes repetir más despacio?"],fr:["Pouvez-vous répéter plus lentement ?"],zh:["您能说慢一点吗？"],vi:["Bạn nói chậm hơn được không?"],ru:["Можешь повторить помедленнее?"],tr:{ru:"Можешь повторить помедленнее?",en:"Could you repeat more slowly?",es:"¿Puede repetir más despacio?",esMX:"¿Puedes repetir más despacio?",vi:"Bạn nói chậm hơn được không?"}},
+{en:["What does this word mean?"],es:["¿Qué significa esta palabra?"],esMX:["¿Qué significa esta palabra?"],fr:["Que signifie ce mot ?"],zh:["这个词是什么意思？"],vi:["Từ này nghĩa là gì?"],ru:["Что означает это слово?"],tr:{ru:"Что означает это слово?",en:"What does this word mean?",es:"¿Qué significa esta palabra?",esMX:"¿Qué significa esta palabra?",vi:"Từ này nghĩa là gì?"}}
+]},
+{id:"realestate",ic:"🏢",aud:"adult",char:{ru:"клиент по новостройке",en:"new-building client",es:"cliente",esMX:"cliente",vi:"khách"},name:{ru:"Недвижимость",en:"Real estate",es:"Inmobiliaria",esMX:"Bienes raíces",vi:"Bất động sản"},role:{ru:"клиент по новостройке: квартира, вид, застройщик, ипотека",en:"a new-building client: flat, view, developer, mortgage",es:"un cliente de obra nueva",esMX:"un cliente de desarrollo",vi:"khách xem căn hộ mới"},cards:[
+{en:["This apartment has a great view."],es:["Este apartamento tiene una gran vista."],esMX:["Este departamento tiene una vista padrísima."],fr:["Cet appartement a une vue magnifique."],zh:["这套公寓视野很好。"],vi:["Căn hộ này có tầm nhìn rất đẹp."],ru:["У этой квартиры отличный вид."],tr:{ru:"У этой квартиры отличный вид.",en:"This apartment has a great view.",es:"Este apartamento tiene una gran vista.",esMX:"Este depa tiene una vista padrísima.",vi:"Căn hộ này có tầm nhìn rất đẹp."}},
+{en:["The developer is very reliable."],es:["La promotora es muy fiable."],esMX:["La desarrolladora es muy confiable."],fr:["Le promoteur est très fiable."],zh:["开发商非常可靠。"],vi:["Chủ đầu tư rất uy tín."],ru:["Застройщик очень надёжный."],tr:{ru:"Застройщик очень надёжный.",en:"The developer is very reliable.",es:"La promotora es muy fiable.",esMX:"La desarrolladora es muy confiable.",vi:"Chủ đầu tư rất uy tín."}}
+]},
+{id:"food",ic:"🍕",aud:"kid",char:{ru:"друг",en:"friend",es:"amigo",esMX:"cuate",vi:"bạn"},name:{ru:"Еда",en:"Food",es:"Comida",esMX:"Comida",vi:"Đồ ăn"},role:{ru:"друг зовёт есть и делится вкусняшкой",en:"a friend who shares a snack",es:"un amigo que comparte un snack",esMX:"un cuate que comparte algo rico",vi:"bạn rủ đi ăn"},cards:[
+{en:["I want pizza with cheese!"],es:["¡Quiero pizza con queso!"],esMX:["¡Quiero pizza con queso!"],fr:["Je veux une pizza au fromage !"],zh:["我要芝士披萨！"],vi:["Tớ muốn pizza phô mai!"],ru:["Я хочу пиццу с сыром!"],tr:{ru:"Я хочу пиццу с сыром!",en:"I want pizza with cheese!",es:"¡Quiero pizza con queso!",esMX:"¡Quiero pizza con queso!",vi:"Tớ muốn pizza phô mai!"}},
+{en:["This ice cream is super yummy."],es:["Este helado está riquísimo."],esMX:["Este helado está buenísimo."],fr:["Cette glace est trop bonne."],zh:["这个冰淇淋超好吃。"],vi:["Cây kem này ngon tuyệt."],ru:["Это мороженое очень вкусное."],tr:{ru:"Это мороженое очень вкусное.",en:"This ice cream is super yummy.",es:"Este helado está riquísimo.",esMX:"Este helado está buenísimo.",vi:"Cây kem này ngon tuyệt."}}
+]},
+{id:"games",ic:"🎮",aud:"kid",char:{ru:"друг",en:"friend",es:"amigo",esMX:"cuate",vi:"bạn"},name:{ru:"Игры",en:"Games",es:"Juegos",esMX:"Juegos",vi:"Trò chơi"},role:{ru:"друг зовёт играть и хвастается победой",en:"a friend who invites to play",es:"un amigo que invita a jugar",esMX:"un cuate que invita a jugar",vi:"bạn rủ chơi"},cards:[
+{en:["Let's play together!"],es:["¡Juguemos juntos!"],esMX:["¡Juguemos juntos!"],fr:["Jouons ensemble !"],zh:["我们一起玩吧！"],vi:["Chơi chung đi!"],ru:["Давай играть вместе!"],tr:{ru:"Давай играть вместе!",en:"Let's play together!",es:"¡Juguemos juntos!",esMX:"¡Juguemos juntos!",vi:"Chơi chung đi!"}},
+{en:["I won! Your turn now."],es:["¡Gané! Ahora te toca."],esMX:["¡Gané! Ahora tú."],fr:["J'ai gagné ! À ton tour."],zh:["我赢了！该你了。"],vi:["Tớ thắng! Đến lượt cậu."],ru:["Я выиграл! Теперь твой ход."],tr:{ru:"Я выиграл! Теперь твой ход.",en:"I won! Your turn now.",es:"¡Gané! Ahora te toca.",esMX:"¡Gané! Ahora tú.",vi:"Tớ thắng! Đến lượt cậu."}}
+]}
+];
+
+var REST={
+open:{en:"Good evening! What can I get you today?",ru:"Добрый вечер! Что будете заказывать?",es:"¡Buenas tardes! ¿Qué les traigo?",esMX:"¡Buenas tardes! ¿Qué les traigo?",vi:"Chào buổi tối! Quý khách dùng gì?"},
+drinks:{en:"It is a hot day — a jug of cold lemonade before we start?",ru:"Сегодня жарко — не хотите ли графин холодного лимонада?",es:"Hace calor — ¿les traigo una jarra de limonada fría?",esMX:"Está haciendo calor — ¿les traigo una jarra de limonada fría?",vi:"Trời nóng — quý khách có muốn một bình nước chanh mát không?"},
+menu:{en:"Wonderful! What would you like to order?",ru:"Отлично! Что будете заказывать?",es:"¡Estupendo! ¿Qué van a pedir?",esMX:"¡Órale! ¿Qué van a ordenar?",vi:"Tuyệt! Quý khách muốn gọi món gì?"},
+bill:{en:"Of course — I will bring the bill right away.",ru:"Конечно — сейчас принесу счёт.",es:"Por supuesto — enseguida les traigo la cuenta.",esMX:"Claro — ahorita les traigo la cuenta.",vi:"Vâng — tôi mang hóa đơn ra ngay."},
+bye:{en:"Thank you! Come back soon.",ru:"Спасибо! Возвращайтесь скорее.",es:"¡Gracias! Vuelvan pronto.",esMX:"¡Gracias! Vuelvan pronto.",vi:"Cảm ơn! Hẹn gặp lại."}};
+var CANNED={en:["Tell me more.","Interesting! And then?","I see. What else?"],ru:["Расскажите подробнее.","Интересно! А дальше?","Понятно. Что ещё?"],es:["Cuéntame más.","¡Interesante! ¿Y luego?","Ya veo. ¿Algo más?"],esMX:["Cuéntame más.","¡Órale! ¿Y luego?","Ya vi. ¿Algo más?"],vi:["Kể thêm đi.","Thú vị! Rồi sao nữa?","Tôi hiểu. Gì nữa không?"]};
+var OPEN_DEFAULT={en:"Hi! How are you today?",ru:"Привет! Как дела сегодня?",es:"¡Hola! ¿Cómo estás hoy?",esMX:"¡Hola! ¿Cómo estás hoy?",vi:"Chào! Hôm nay bạn thế nào?"};
+function sceneOpen(tid){if(tid==="restaurant")return REST.open[target]||REST.open.en;var o=OPEN_DEFAULT;return o[target]||o.en;}
+function sceneNext(tid,said){
+if(tid==="restaurant"){var low=(said||"").toLowerCase();
+  if(/жар|hot|heat|calor|caliente|chaud|热|nóng/.test(low))return (REST.drinks[target]||REST.drinks.en);
+  if(/заказ|order|pedir|ordenar|commander|ready|listo|готов|点|gọi/.test(low))return (REST.menu[target]||REST.menu.en);
+  if(/счёт|счет|bill|check|cuenta|addition|结|hóa đơn/.test(low))return (REST.bill[target]||REST.bill.en);
+  if(/спасибо|thanks|gracias|merci|谢|cảm ơn/.test(low))return (REST.bye[target]||REST.bye.en);}
+var a=CANNED[target]||CANNED.en;return a[Math.floor(Math.random()*a.length)];
+}
+
+var LS="fonema_v11";
+var mem={current:null,profiles:[]};
+try{var raw=localStorage.getItem(LS);if(raw)mem=JSON.parse(raw);}catch(e){}
+if(!mem.profiles||!mem.profiles.length){mem={current:"p1",profiles:[{id:"p1",name:"Вы",avatar:"fox",age:"adult",native:"ru",target:"en",mode:"repeat",topicId:"restaurant",done:{},streak:0,sum:0,att:0}]};}
+if(!mem.current)mem.current=mem.profiles[0].id;
+function saveMem(){try{localStorage.setItem(LS,JSON.stringify(mem));}catch(e){}}
+var native,target,mode,topicId,cardIdx=0,order=[],rec=null,recording=false,finalText="",dialogHistory=[],busy=false;
+function $(id){return document.getElementById(id);}
+var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+function cP(){for(var i=0;i<mem.profiles.length;i++){if(mem.profiles[i].id===mem.current)return mem.profiles[i];}return mem.profiles[0];}
+function t(){return UI[native]||UI.en;}
+function isKid(){return cP().age==="kid";}
+function langName(k){return LANGS[k][3];}
+function charName(tp){var c=tp.char||{};return c[native]||c.en||"";}
+function visibleTopics(){var out=[];for(var i=0;i<TOPICS.length;i++){var a=TOPICS[i].aud;if(isKid()?(a==="kid"||a==="all"):(a==="adult"||a==="all"))out.push(TOPICS[i]);}return out;}
+function curTopic(){for(var i=0;i<TOPICS.length;i++)if(TOPICS[i].id===topicId)return TOPICS[i];var v=visibleTopics();return v[0]||TOPICS[0];}
+function modesFor(){return isKid()?["repeat","dialog"]:["repeat","free","dialog"];}
+
+var wave=$("wave");for(var wi=0;wi<28;wi++){var ws=document.createElement("span");ws.style.setProperty("--i",wi);ws.style.setProperty("--h",(18+Math.random()*82)+"%");wave.appendChild(ws);}
+
+function builtinAnalyze(said){var errs=[],fixed=said;
+if(/\bmuch so\b/i.test(said)){fixed=fixed.replace(/much so/i,"so much");errs.push({wrong:"much so",right:"so much",why:(native==="ru"?"«much so» не используется — so much / very much":"use so much / very much")});}
+if(target==="en"&&/\bmore better\b/i.test(said)){fixed=fixed.replace(/more better/i,"better");errs.push({wrong:"more better",right:"better",why:(native==="ru"?"better уже сравнительная — more не нужно":"better is already comparative")});}
+if(target==="en"&&/\bi am agree\b/i.test(said)){fixed=fixed.replace(/i am agree/i,"I agree");errs.push({wrong:"I am agree",right:"I agree",why:(native==="ru"?"agree — глагол, без am":"agree is a verb, no am")});}
+return {offline:true,fixed:fixed,score:errs.length?null:null,errors:errs,tip:errs.length?"":(native==="ru"?"Встроенный разбор не нашёл частых ошибок":"No common mistakes found")};}
+function analyzeFree(said){return Promise.resolve(builtinAnalyze(said));}
+function dialogTurn(said){var b=builtinAnalyze(said);return Promise.resolve({score:b.score,errors:b.errors,tip:b.tip,next:sceneNext(topicId,said)});}
+
+function setPet(st){var el=$("pet");el.className="pet "+st;el.innerHTML=petSVG(cP().avatar);}
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];});}
+function speak(txt){if(!txt||!("speechSynthesis"in window))return;var u=new SpeechSynthesisUtterance(txt);u.lang=LANGS[target][2];u.rate=.92;speechSynthesis.cancel();speechSynthesis.speak(u);}
+function status(s){$("status").textContent=s;}
+function refreshPills(){var p=cP();$("streakPill").textContent="🔁 "+p.streak;$("avgPill").textContent=p.att?("Ø "+Math.round(p.sum/p.att)):"Ø —";}
+
+function renderSwitch(){var box=$("swProfiles");box.innerHTML="";for(var i=0;i<mem.profiles.length;i++){(function(p){var b=document.createElement("button");b.className="swAv";b.innerHTML=petSVG(p.avatar);b.onclick=function(){mem.current=p.id;loadG();saveMem();renderSwitch();renderOnboard();};box.appendChild(b);})(mem.profiles[i]);}
+var add=document.createElement("button");add.className="swAdd";add.textContent="+";add.onclick=startCreate;box.appendChild(add);}
+
+function startCreate(){
+var u=t();
+var nm=prompt(u.lName+":");if(!nm)return;
+var av=prompt(u.lAvatar+" (fox / owl / cat / dragon / sloth / bot):","fox");if(AVATARS.indexOf(av)<0)av="fox";
+var age=confirm(u.lKid+"?  OK = "+u.lKid+",  Cancel = "+u.lAdult)?"kid":"adult";
+var p={id:"p"+Date.now(),name:nm,avatar:av,age:age,native:"ru",target:"en",mode:"repeat",topicId:(age==="kid"?"food":"restaurant"),done:{},streak:0,sum:0,att:0};
+mem.profiles.push(p);mem.current=p.id;loadG();saveG();renderSwitch();renderOnboard();}
+
+function renderOnboard(){var u=t();
+$("mTitle").innerHTML=u.mTitle;$("mSub").textContent=u.mSub;
+$("lWho").textContent=u.lWho;$("lNative").textContent=u.lNative;$("lTarget").textContent=u.lTarget;$("lMode").textContent=u.lMode;$("lTheme").textContent=u.lTheme;
+$("startBtn").textContent=u.start+" →";$("foot").textContent=u.foot;
+var box=$("profiles");box.innerHTML="";
+for(var i=0;i<mem.profiles.length;i++){(function(p){var c=document.createElement("div");c.className="pcard"+(p.age==="kid"?" kid":"");c.innerHTML='<div class="pav">'+petSVG(p.avatar)+'</div><div class="pn">'+esc(p.name)+'</div><div class="pm">'+langName(p.native)+"→"+langName(p.target)+"</div>";c.onclick=function(){mem.current=p.id;loadG();saveMem();renderSwitch();renderOnboard();};box.appendChild(c);})(mem.profiles[i]);}
+var add=document.createElement("div");add.className="pcard add";add.innerHTML='<div style="font-size:30px">+</div>'+u.addNew;add.onclick=startCreate;box.appendChild(add);
+var fn=$("flagsNative");fn.innerHTML="";for(var k in LANGS){(function(key){var b=document.createElement("button");b.className="flag"+(key===native?" on":"");b.innerHTML='<span class="em">'+LANGS[key][0]+"</span>"+LANGS[key][3];b.onclick=function(){native=key;if(target===native){for(var x in LANGS){if(x!==native){target=x;break;}}}saveG();renderOnboard();};fn.appendChild(b);})(k);}
+var ft=$("flagsTarget");ft.innerHTML="";for(var k2 in LANGS){(function(key){var dis=(key===native);var b=document.createElement("button");b.className="flag"+(key===target?" on":"")+(dis?" disabled":"");b.innerHTML='<span class="em">'+LANGS[key][0]+"</span>"+LANGS[key][3];if(!dis)b.onclick=function(){target=key;saveG();renderOnboard();};ft.appendChild(b);})(k2);}
+var seg=$("modeSeg");seg.innerHTML="";var ms=modesFor();for(var m=0;m<ms.length;m++){(function(mm){var b=document.createElement("button");b.textContent=u.modes[mm];if(mm===mode)b.className="on";b.onclick=function(){mode=mm;saveG();renderOnboard();};seg.appendChild(b);})(ms[m]);}
+var th=$("themes");th.innerHTML="";var vis=visibleTopics();if(vis.length){var found=false;for(var v=0;v<vis.length;v++)if(vis[v].id===topicId)found=true;if(!found)topicId=vis[0].id;}
+for(var ti=0;ti<vis.length;ti++){(function(tp){var b=document.createElement("button");b.className="theme"+(tp.aud==="kid"?" kid":"")+(tp.id===topicId?" on":"");b.innerHTML='<span class="ic">'+tp.ic+'</span><div class="nm">'+(tp.name[native]||tp.name.en)+'</div><div class="ct">'+u.sceneWord+": "+charName(tp)+" · "+tp.cards.length+"</div>";b.onclick=function(){topicId=tp.id;saveG();renderOnboard();};th.appendChild(b);})(vis[ti]);}}
+
+function loadG(){var p=cP();native=p.native;target=p.target;mode=p.mode;topicId=p.topicId;}
+function saveG(){var p=cP();p.native=native;p.target=target;p.mode=mode;p.topicId=topicId;saveMem();}
+
+function buildOrder(){var tp=curTopic();var p=cP();order=[];for(var i=0;i<tp.cards.length;i++)order.push(i);order.sort(function(a,b){var sa=p.done[topicId+"_"+a],sb=p.done[topicId+"_"+b];var va=(sa==null)?0:(sa>=90?2:1);var vb=(sb==null)?0:(sb>=90?2:1);return va-vb;});}
+function curCard(){return curTopic().cards[order[cardIdx]];}
+function renderModeTabs(){var u=t();var box=$("modeTabs");box.innerHTML="";var ms=modesFor();for(var i=0;i<ms.length;i++){(function(mm){var b=document.createElement("button");b.textContent=u.modes[mm];if(mm===mode)b.className="on";b.onclick=function(){mode=mm;saveG();enterMode();};box.appendChild(b);})(ms[i]);}}
+function enterMode(){renderModeTabs();setPet("idle");$("result").hidden=true;$("aiSlot").innerHTML="";
+if(mode==="dialog"){$("chat").hidden=false;$("ipa").textContent="";$("target").textContent="🗣️ "+t().modes.dialog;$("tr").textContent=t().dialogIdle;$("nextBtn").disabled=true;$("listenBtn").disabled=true;startDialog();}
+else{$("chat").hidden=true;$("chat").innerHTML="";$("nextBtn").disabled=false;$("listenBtn").disabled=false;buildOrder();cardIdx=0;loadCard();}
+status(mode==="free"?t().freeIdle:t().idle);}
+function loadCard(){var u=t();var c=curCard();var cell=c[target]||{};
+$("ctxWho").textContent=(isKid()?"🧒 ":" ")+(cP().name||"?");
+$("ctxDir").innerHTML="<b>"+LANGS[native][0]+"</b> → <b>"+LANGS[target][0]+"</b>";
+$("ctxTheme").textContent=curTopic().ic+" "+(curTopic().name[native]||curTopic().name.en)+" · "+charName(curTopic());
+$("listenBtn").textContent="🔊 "+u.listen;$("nextBtn").textContent=u.next+" →";$("retryBtn").textContent="↻ "+u.retry;
+$("result").hidden=true;$("aiSlot").innerHTML="";
+if(mode==="free"){$("target").textContent="🎙 …";$("ipa").textContent="";$("tr").textContent=u.freeIdle;status(u.freeIdle);}
+else if(!(cell&&cell[0])){$("target").textContent="🎙 …";$("ipa").textContent="";$("tr").textContent=u.freeIdle;status(u.freeIdle);}
+else{$("target").textContent=cell[0];$("ipa").textContent="";$("tr").textContent="«"+((c.tr||{})[native]||(c.tr||{}).en||"")+"»";status(u.idle);}}
+
+function setRec(on){recording=on;$("micBtn").classList.toggle("rec",on);wave.classList.toggle("on",on);$("deck").classList.toggle("listening",on);if(on){setPet("listen");$("result").hidden=true;status(t().listen2);}}
+function toggle(){if(busy)return;if(!SR){status("Web Speech API N/A");return;}if(recording){rec.stop();return;}
+finalText="";rec=new SR();rec.lang=LANGS[target][1];rec.interimResults=true;rec.maxAlternatives=1;
+rec.onresult=function(e){var inter="";for(var i=0;i<e.results.length;i++){if(e.results[i].isFinal)finalText+=e.results[i][0].transcript;else inter+=e.results[i][0].transcript;status(t().heard+(finalText+inter));}};
+rec.onend=function(){setRec(false);setPet("idle");var said=finalText.trim();if(!said){status(t().nospeech);return;}handleSaid(said);};
+rec.onerror=function(e){setRec(false);setPet("idle");status(e.error==="not-allowed"?t().denied:t().nospeech);};
+setRec(true);rec.start();}
+function handleSaid(said){if(mode==="repeat")return evalRepeat(said);if(mode==="free")return evalFree(said);if(mode==="dialog")return evalDialog(said);}
+
+function norm(s){return s.toLowerCase().replace(/[.,!?;:«»"'’¿¡\-。，？！、]/g," ").replace(/\s+/g," ").trim().split(" ").filter(Boolean);}
+function diffWords(a,b){var n=a.length,m=b.length,dp=[],i,j;for(i=0;i<=n;i++){var row=[];for(j=0;j<=m;j++)row.push(0);dp.push(row);}for(i=n-1;i>=0;i--)for(j=m-1;j>=0;j--)dp[i][j]=(a[i]===b[j])?dp[i+1][j+1]+1:Math.max(dp[i+1][j],dp[i][j+1]);var out=[];i=0;j=0;while(i<n&&j<m){if(a[i]===b[j]){out.push({w:a[i],s:"ok"});i++;j++;}else if(dp[i+1][j]>=dp[i][j+1]){out.push({w:a[i],s:"miss"});i++;}else{out.push({w:b[j],s:"extra"});j++;}}while(i<n)out.push({w:a[i++],s:"miss"});while(j<m)out.push({w:b[j++],s:"extra"});return out;}
+function kidVerdict(sc){var u=t();if(!isKid())return sc>=90?u.vGreat:sc>=70?u.vGood:sc>=40?u.vMid:u.vLow;return sc>=90?u.vKidGreat:sc>=70?u.vKidGood:sc>=40?u.vKidMid:u.vKidLow;}
+
+function evalRepeat(said){var u=t();var c=curCard();var T=norm(((c[target]||{})[0])||"");var S=norm(said);var parts=diffWords(T,S);var ok=0;for(var i=0;i<parts.length;i++)if(parts[i].s==="ok")ok++;var score=T.length?Math.round(100*ok/T.length):0;
+$("result").hidden=false;var d=$("diff");d.innerHTML="";for(var j=0;j<parts.length;j++){var s=document.createElement("span");s.className="w "+parts[j].s;s.textContent=(parts[j].s==="extra"?"~ ":"")+parts[j].w;d.appendChild(s);}
+setPet(score>=70?"success":"ouch");$("verdict").textContent=kidVerdict(score);
+var miss=[];for(var m2=0;m2<parts.length;m2++)if(parts[m2].s==="miss")miss.push(parts[m2].w);
+$("aiSlot").innerHTML='<div class="ai"><span class="tip">'+(score===100?u.tipPerfect:(miss.length?u.tipMiss+esc(miss.join(", "))+u.tipMiss2:u.tipExtra))+"</span></div>";
+var p=cP();p.att++;p.sum+=score;p.streak=score>=90?p.streak+1:0;p.done[topicId+"_"+order[cardIdx]]=Math.max(p.done[topicId+"_"+order[cardIdx]]||0,score);saveMem();refreshPills();}
+
+function evalFree(said){var u=t();
+if(safetyCheck(said)){$("result").hidden=false;$("diff").innerHTML="";$("verdict").textContent=u.vMid;setPet("ouch");$("aiSlot").innerHTML='<div class="ai"><span class="tip">'+(isKid()?u.safetyKid:u.safetyAdult)+"</span></div>";return;}
+$("result").hidden=true;status("… "+u.thinking);setPet("think");
+analyzeFree(said).then(function(r){$("result").hidden=false;$("diff").innerHTML="";renderAI(r);setPet((r.score!=null&&r.score>=70)||(!r.errors||!r.errors.length)?"success":"ouch");
+  $("verdict").textContent=(r.score!=null)?kidVerdict(r.score):(isKid()?u.vKidGood:u.vMid);
+  var p=cP();if(r.score!=null){p.att++;p.sum+=r.score;p.streak=r.score>=90?p.streak+1:0;saveMem();refreshPills();}});}
+function renderAI(r){var html='<div class="ai"><div class="fixed">'+esc(r.fixed)+' <button class="play" data-line="'+esc(r.fixed)+'">🔊</button></div>';
+if(r.errors&&r.errors.length){for(var i=0;i<r.errors.length;i++){var e=r.errors[i];if(e.wrong||e.right)html+='<div class="err"><span class="wr">'+esc(e.wrong)+'</span> → <span class="ri">'+esc(e.right)+"</span>"+(e.why?'<div style="color:var(--muted);font-size:13px">'+esc(e.why)+"</div>":"")+"</div>";}}
+if(r.tip)html+='<span class="tip">'+esc(r.tip)+"</span>";
+html+='<div style="font-family:var(--mono);font-size:10px;color:var(--amber);margin-top:6px">⚡ offline</div></div>';
+$("aiSlot").innerHTML=html;}
+
+function pushBub(cls,html){var c=$("chat");var d=document.createElement("div");d.className="bub "+cls;d.innerHTML=html;c.appendChild(d);c.scrollTop=c.scrollHeight;}
+function startDialog(){$("chat").innerHTML="";dialogHistory=[];busy=true;setPet("think");status("… "+t().clientThinks);
+setTimeout(function(){finishStart(sceneOpen(topicId));},400);}
+function finishStart(line){busy=false;setPet("idle");status(t().dialogIdle);dialogHistory.push({role:"assistant",content:line});pushBub("client",'<div class="who">🗣 '+charName(curTopic())+' <button class="play" data-line="'+esc(line)+'">🔊</button></div>'+esc(line));}
+function evalDialog(said){var u=t();busy=true;pushBub("me",esc(said));setPet("think");status("… "+u.clientThinks);
+if(safetyCheck(said)||(isKid()&&piiCheck(said))){var soft=safetyCheck(said)?(isKid()?u.safetyKid:u.safetyAdult):u.pii;pushBub("fb",esc(soft));var nx=sceneNext(topicId,said);dialogHistory.push({role:"user",content:said});dialogHistory.push({role:"assistant",content:nx});pushBub("client",'<div class="who">🗣 '+charName(curTopic())+' <button class="play" data-line="'+esc(nx)+'">🔊</button></div>'+esc(nx));setPet("idle");status(u.dialogIdle);busy=false;return;}
+dialogTurn(said).then(function(r){busy=false;
+  if(r.errors&&r.errors.length){var html="";for(var i=0;i<r.errors.length;i++){var e=r.errors[i];if(e.wrong||e.right)html+='<span class="wr">'+esc(e.wrong)+'</span> → <span class="ri">'+esc(e.right)+"</span> ";}pushBub("fb","<b>✓</b> "+html+(r.tip?"<br>"+esc(r.tip):""));setPet("ouch");}
+  else if(r.tip){pushBub("fb",esc(r.tip));setPet("success");}else setPet("success");
+  if(r.next){dialogHistory.push({role:"user",content:said});dialogHistory.push({role:"assistant",content:r.next});pushBub("client",'<div class="who">🗣 '+charName(curTopic())+' <button class="play" data-line="'+esc(r.next)+'">🔊</button></div>'+esc(r.next));}
+  setPet("idle");status(u.dialogIdle);});}
+
+document.addEventListener("click",function(e){var b=(e.target&&e.target.closest)?e.target.closest(".play"):null;if(b)speak(b.getAttribute("data-line"));});
+$("startBtn").onclick=function(){$("onboard").hidden=true;$("trainer").hidden=false;enterMode();};
+$("changeBtn").onclick=function(){$("trainer").hidden=true;$("onboard").hidden=false;renderOnboard();};
+$("brandHome").onclick=function(){$("trainer").hidden=true;$("onboard").hidden=false;renderOnboard();};
+$("micBtn").onclick=toggle;
+$("retryBtn").onclick=function(){$("result").hidden=true;toggle();};
+$("nextBtn").onclick=function(){cardIdx=(cardIdx+1)%order.length;loadCard();setPet("idle");};
+$("listenBtn").onclick=function(){var c=curCard();speak((c[target]||{})[0]||"");};
+
+loadG();renderSwitch();refreshPills();renderOnboard();
+</script>
+</body>
+</html>
