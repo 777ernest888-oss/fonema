@@ -350,8 +350,7 @@ dialogTurn(said).then(function(r){busy=false;
   if(r.next){dialogHistory.push({role:"user",content:said});dialogHistory.push({role:"assistant",content:r.next});pushBub("client",'<div class="who">🗣 '+charName(curTopic())+' <button class="play" data-line="'+esc(r.next)+'">🔊</button></div>'+esc(r.next));}
   setPet("idle");status(u.dialogIdle);});}
 
-document.addEventListener("click",function(e){var b=(e.target&&e.target.closest)?e.target.closest(".play"):null;if(b)speak(b.getAttribute("data-line"));}
-);
+document.addEventListener("click",function(e){var b=(e.target&&e.target.closest)?e.target.closest(".play"):null;if(b)speak(b.getAttribute("data-line"));});
 $("startBtn").onclick=function(){$("onboard").hidden=true;$("trainer").hidden=false;enterMode();};
 $("changeBtn").onclick=function(){$("trainer").hidden=true;$("onboard").hidden=false;renderOnboard();};
 $("brandHome").onclick=function(){$("trainer").hidden=true;$("onboard").hidden=false;renderOnboard();};
