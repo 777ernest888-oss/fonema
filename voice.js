@@ -1,4 +1,4 @@
-// voice.js v3 — рация + официант, устойчивый к обрывкам
+// voice.js v5 — рация + официант + разблокировка голоса + умные гипотезы
 (function(){
 var HINT={ru:"🎙 слушаю… нажми 🎙 ещё раз, когда закончишь",en:"🎙 listening… tap 🎙 again when done",es:"🎙 escuchando… toca 🎙 otra vez al terminar",esMX:"🎙 escuchando… toca 🎙 otra vez al terminar",fr:"🎙 j'écoute… touche 🎙 à la fin",zh:"🎙 在听…说完再按🎙",vi:"🎙 đang nghe… hết ý bấm 🎙 lần nữa"};
 document.addEventListener("click",function(e){
@@ -6,6 +6,10 @@ var b=e.target&&e.target.closest?e.target.closest("#micBtn"):null;if(!b)return;
 if("speechSynthesis"in window)speechSynthesis.cancel();
 setTimeout(function(){if(window.recording&&window.status)window.status(HINT[window.native]||HINT.en);},0);
 },true);
+if("speechSynthesis"in window){
+var un=function(){try{speechSynthesis.resume();}catch(e){}var s=new SpeechSynthesisUtterance(" ");s.volume=0.01;try{speechSynthesis.speak(s);}catch(e){}document.removeEventListener("pointerdown",un);};
+document.addEventListener("pointerdown",un);
+}
 var R={
 greet:{en:"Good evening! What can I get you today?",ru:"Добрый вечер! Что будете заказывать?",es:"¡Buenas tardes! ¿Qué les traigo?",vi:"Chào buổi tối! Quý khách dùng gì?"},
 drinks:{en:"It is a hot day — a jug of cold lemonade?",ru:"Сегодня жарко — не хотите ли графин холодного лимонада?",es:"Hace calor — ¿les traigo una jarra de limonada fría?",vi:"Trời nóng — quý khách có muốn một bình nước chanh mát không?"},
@@ -29,6 +33,7 @@ var ROUTES=[
 ];
 function L(o){return o[window.target]||o.es||o.en;}
 function route(said){var low=(said||"").toLowerCase();for(var i=0;i<ROUTES.length;i++){if(ROUTES[i][0].test(low))return L(R[ROUTES[i][1]]);}return L(R.clarify);}
+window.pickBestAlt=function(alts){for(var i=0;i<alts.length;i++){var low=(alts[i]||"").toLowerCase();for(var r=0;r<ROUTES.length;r++){if(ROUTES[r][0].test(low))return alts[i];}}return alts[0];};
 if(typeof window.sceneNext==="function"){var _sn=window.sceneNext;window.sceneNext=function(tid,said){if(tid==="restaurant")return route(said);return _sn(tid,said);};}
 if("speechSynthesis"in window){
 var chat=document.getElementById("chat");
