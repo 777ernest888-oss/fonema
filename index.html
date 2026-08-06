@@ -310,7 +310,7 @@ function toggle(){if(busy)return;if(!SR){status("Web Speech API N/A");return;}if
 finalText="";rec=new SR();rec.lang=LANGS[target][1];rec.interimResults=true;rec.maxAlternatives=5;rec.continuous=true;
 rec.onresult=function(e){var inter="";for(var i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal)finalText+=e.results[i][0].transcript;else inter+=e.results[i][0].transcript;status(t().heard+(finalText+inter));}};
 rec.onend=function(){if(recording&&!rec._stop){setTimeout(function(){if(recording&&!rec._stop){try{rec.start();}catch(e){}}},120);return;}setRec(false);setPet("idle");var said=finalText.trim();if(!said){status(t().nospeech);return;}handleSaid(said);};
-rec.onerror=function(e){if(e.error==="no-speech"||e.error==="aborted")return;setRec(false);setPet("idle");status(e.error==="not-allowed"?t().denied:t().nospeech);};
+rec.onerror=function(e){var d=document.getElementById("dbg");if(d)d.textContent="sr error: "+e.error;if(e.error==="not-allowed"||e.error==="audio-capture"||e.error==="service-not-allowed"){rec._stop=true;setRec(false);setPet("idle");status(e.error==="not-allowed"?t().denied:t().nospeech);}};
 setRec(true);rec.start();}
 function handleSaid(said){if(mode==="repeat")return evalRepeat(said);if(mode==="free")return evalFree(said);if(mode==="dialog")return evalDialog(said);}
 
