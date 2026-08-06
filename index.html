@@ -307,7 +307,7 @@ else{$("target").textContent=cell[0];$("ipa").textContent="";$("tr").textContent
 
 function setRec(on){recording=on;$("micBtn").classList.toggle("rec",on);wave.classList.toggle("on",on);$("deck").classList.toggle("listening",on);if(on){setPet("listen");$("result").hidden=true;status(t().listen2);}}
 function toggle(){if(busy)return;if(!SR){status("Web Speech API N/A");return;}if(recording){rec._stop=true;rec.stop();return;}
-finalText="";rec=new SR();rec.lang=LANGS[target][1];rec.interimResults=true;rec.maxAlternatives=1;rec.continuous=true;
+finalText="";rec=new SR();rec.lang=LANGS[target][1];rec.interimResults=true;rec.maxAlternatives=5;rec.continuous=true;
 rec.onresult=function(e){var inter="";for(var i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal)finalText+=e.results[i][0].transcript;else inter+=e.results[i][0].transcript;status(t().heard+(finalText+inter));}};
 rec.onend=function(){if(recording&&!rec._stop){setTimeout(function(){if(recording&&!rec._stop){try{rec.start();}catch(e){}}},120);return;}setRec(false);setPet("idle");var said=finalText.trim();if(!said){status(t().nospeech);return;}handleSaid(said);};
 rec.onerror=function(e){if(e.error==="no-speech"||e.error==="aborted")return;setRec(false);setPet("idle");status(e.error==="not-allowed"?t().denied:t().nospeech);};
